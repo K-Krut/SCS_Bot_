@@ -5,21 +5,31 @@
 # str.join('\n', [f'{i}: {self.__dict__[i]}' for i in self.__dict__.keys()])
 # def __str__(self):
 #      return '\n'.join([''.join([f'{j}: {i[j]}\n' for j in i.keys()]) for i in data.values()])
+from typing import NamedTuple
+
 import airtable
 from config import BASE_ID, API_KEY
 
 
 TABLE = '💻 Editing'
-view_ = 'KKrut In Progress'
-
+view_ = 'Vlad Legun In Progress'
+FORMULA_1 = "AND({Status} != '✅ Editing Done', {Status} != '🤴🏻 Client Editing Approval')"
+FORMULA_2 = "OR({Status} = '👨🏻‍💻 Editor Assigned', {Status} = '✋🏼 On Hold')"
 
 Data_ = airtable.Airtable(BASE_ID, API_KEY)
 DICT_ = Data_.iterate(
     table_name=TABLE, view=view_, fields=['Name', 'Status', 'Brand'],
-    filter_by_formula="AND({Status} != '✅ Editing Done', {Status} != '🤴🏻 Client Editing Approval')", max_records=10
+    filter_by_formula=FORMULA_2, max_records=1
 )
+
+
+class Records(NamedTuple):
+    name_ = str
+    status_ = str
+    brand_ = str
+
 
 for i in DICT_:
     for j in i.get('fields').keys():
-        print('\n'.join([f'{j}:  {i.get("fields")[j]}']))
+        print(j, i.get("fields")[j])
 
