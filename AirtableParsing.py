@@ -6,9 +6,7 @@
 
 import airtable
 
-API_KEY = 'keytmiDZHJP7bNZby'
-BASE_ID = 'app8dUiwvFFBqZwct'
-TABLE = '💻 Editing'
+
 view_ = 'KKrut In Progress'
 Data_ = airtable.Airtable(BASE_ID, API_KEY)
 for i in Data_.iterate(table_name=TABLE, view=view_, fields=['Name', 'Status', 'Brand'], max_records=1):
