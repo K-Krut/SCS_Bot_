@@ -5,41 +5,19 @@
 # str.join('\n', [f'{i}: {self.__dict__[i]}' for i in self.__dict__.keys()])
 # def __str__(self):
 #      return '\n'.join([''.join([f'{j}: {i[j]}\n' for j in i.keys()]) for i in data.values()])
-
-
 import airtable
+from config import BASE_ID, API_KEY
 
-API_KEY = 'keytmiDZHJP7bNZby'
-BASE_ID = 'app8dUiwvFFBqZwct'
+
 TABLE = '💻 Editing'
 view_ = 'KKrut In Progress'
+
+
 Data_ = airtable.Airtable(BASE_ID, API_KEY)
 DICT_ = Data_.iterate(
     table_name=TABLE, view=view_, fields=['Name', 'Status', 'Brand'],
-    filter_by_formula="{Status} != '✅ Editing Done'", max_records=10
+    filter_by_formula="AND({Status} != '✅ Editing Done', {Status} != '🤴🏻 Client Editing Approval')", max_records=10
 )
-# IF(
-#   OR(
-#     {Status} = "Recently Completed",
-#     {Status} = "Completed/Archived"
-#   ),
-#   "✅Done✅",
-#   IF(
-#     {Target Completion Date} = BLANK(),
-#     "🛑TARGET DATE NEEDED🛑",
-#     IF(
-#       AND(
-#         OR(
-#           {Status} = "In Progress",
-#           {Status} = "Roadblocked"
-#         ),
-#         IS_BEFORE({Target Completion Date}, TODAY())
-#       ),
-#       "⏰OVERDUE⏰",
-#       "🏃‍♂️In-progress🏃‍♂️"
-#     )
-#   )
-# )
 
 for i in DICT_:
     for j in i.get('fields').keys():
