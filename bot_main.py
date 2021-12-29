@@ -1,7 +1,6 @@
 import AirtableParsing
 import markup
 from imports import bot, types, dp, executor
-
 #     "view": "KKrut In Progress"
 
 
