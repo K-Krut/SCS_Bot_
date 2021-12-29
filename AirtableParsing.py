@@ -19,7 +19,7 @@ FORMULA_2 = "OR({Status} = '👨🏻‍💻 Editor Assigned', {Status} = '✋�
 Data_ = airtable.Airtable(BASE_ID, API_KEY)
 DICT_ = Data_.iterate(
     table_name=TABLE, view=view_, fields=['Name', 'Status', 'Brand'],
-    filter_by_formula=FORMULA_2, max_records=1
+    filter_by_formula=FORMULA_2, max_records=5
 )
 
 
@@ -29,7 +29,22 @@ class Records(NamedTuple):
     brand_ = str
 
 
-for i in DICT_:
-    for j in i.get('fields').keys():
-        print(j, i.get("fields")[j])
+#
+# def getting_data():
+#     for i in DICT_:
+#         print(i.get('fields').values())
+#         for j in i.get('fields').items():
+#             print(type(j))
+#             processing(j)
+#
+
+
+def getting_data():
+    return [processing(i.get('fields')) for i in DICT_]
+
+
+def processing(data):
+    return f'<b><i>{data["Name"].split(" | ")[0]}</i></b>\n' \
+           f'Status: {data["Status"].replace("u200d", "")}\n' \
+           f'Brand: {data["Brand"][0]}'
 
