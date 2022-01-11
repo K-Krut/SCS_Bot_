@@ -6,7 +6,6 @@ from imports import bot, types, dp, executor
 @dp.message_handler(commands=['start'])
 async def send_welcome_message(message: types.Message):
     await message.delete()
-    print(message.from_user.id)
     await bot.send_message(
         message.from_user.id, f"👤*Hi! {message.from_user.first_name if message.from_user.first_name else ''} "
                               f"{message.from_user.last_name if message.from_user.last_name else ''}\n "
@@ -16,16 +15,15 @@ async def send_welcome_message(message: types.Message):
 
 
 @dp.callback_query_handler(text='TASKS_IN_PROGRESS')
-async def this_month_statistic_handler(call: types.CallbackQuery):
+async def tasks_in_progress_handler(call: types.CallbackQuery):
     await call.message.delete()
-    print('@dp.callback_query_handler(text=TASKS_IN_PROGRESS')
     try:
         await bot.send_message(
             call.from_user.id,
-            '\n\n'.join([i for i in AirtableParsing.getting_data()]),
+            '\n\n'.join([i for i in AirtableParsing.getting_processed_data(call.from_user.id)]),
             parse_mode='HTML'
         )
-    except Exception:
+    except Exception as exp:
         return
 
 
