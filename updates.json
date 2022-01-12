@@ -1,40 +1,15 @@
 {
-  "2022-01-10 14:13:15": {
-    "Serge Creator - Creator": {
-      "assigned": [],
-      "revisions": [
-        "recufsQKq8TyiQOI9",
-        "receAX1QZmsUlXQAP"
-      ]
-    },
-    "KKrut": {
-      "assigned": [],
-      "revisions": [
-        "recufsQKq8Ty98666",
-        "receAX1QZmsUlXQAP"
-      ]
-    }
-  },
-  "2022-01-10 15:21:20": {
-    "Serge Creator - Creator": {
-      "assigned": [],
-      "revisions": [
-        "recufsQKq8TyiQOI9",
-        "receAX1QZmsUlXQAP"
-      ]
-    },
-    "Mikola Matskevich": {
-      "assigned": [
-        "rec68mFqf6P4VGvZo"
-      ],
-      "revisions": []
-    },
-    "KKrut": {
-      "assigned": [],
-      "revisions": [
-        "recufsQKq8Ty98666",
-        "receAX1QZmsjjjjjj"
-      ]
-    }
-  }
+  "2022-01-10 14:13:15": [
+    "recufsQKq8TyiQOI9",
+    "receAX1QZmsUlXQAP",
+    "recufsQKq8Ty98666",
+    "receAX1QZmsUlXQAP"
+  ],
+  "2022-01-10 15:21:20": [
+    "recufsQKq8TyiQOI9",
+    "receAX1QZmsUlXQAP",
+    "rec68mFqf6P4VGvZo",
+    "recufsQKq8Ty98666",
+    "receAX1QZmsjjjjjj"
+  ]
 }
