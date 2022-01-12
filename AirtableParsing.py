@@ -2,16 +2,10 @@ import json
 from datetime import datetime
 from functools import reduce
 from operator import or_
-
 import airtable
-import dictdiffer as dictdiffer
-import numpy
-
 from exceptions import SearchUser
 from config import BASE_ID, API_KEY
-from Constants import TABLE, EDITOR_ASSIGNED_FORMULA, EDITOR_REVISION_FORMULA, \
-    ASSIGNED_FORMULA, TASKS_IN_PROGRESS_FORMULA, FIELDS
-
+from Constants import TABLE, ASSIGNED_FORMULA, TASKS_IN_PROGRESS_FORMULA, FIELDS
 
 Data_ = airtable.Airtable(BASE_ID, API_KEY)
 
@@ -24,32 +18,29 @@ def get_user_view(user_id):
     data = json.load(open('Creators.json'))
     if not str(user_id) in data:
         raise SearchUser(user_id)
-    print(data[str(user_id)]['view'])
     return data[str(user_id)]['view']
 
 
 def get_view_data(user_id):
     return Data_.iterate(
         table_name=TABLE, view=get_user_view(user_id), fields=FIELDS,
-        filter_by_formula=TASKS_IN_PROGRESS_FORMULA, max_records=5
+        filter_by_formula=TASKS_IN_PROGRESS_FORMULA, max_records=15
     )
 
 
 def processing(data):
-    print(data)
     return f'<b><i>{data["Name"].split(" | ")[0]}</i></b>\n' \
            f'Status: {data["Status"].replace("u200d", "")}\n' \
            f'Brand: {data["Brand"][0]}'
 
 
 def getting_processed_data(user_id):
-    print([processing(i.get('fields')) for i in get_view_data(user_id)])
     return [processing(i.get('fields')) for i in get_view_data(user_id)]
 
 
-def _get_view_records(view_, formula_):
+def _get_view_records(view_, formula_, fields_):
     return Data_.iterate(
-        table_name=TABLE, view=view_, fields='record_id',
+        table_name=TABLE, view=view_, fields=fields_,
         filter_by_formula=formula_
     )
 
@@ -59,95 +50,58 @@ def get_views():
 
 
 def get_views_records():
-    arr, data = {}, json.load(open('updates.json'))
+    arr, data = [], json.load(open('updates.json'))
     for j in get_views():
-        assigned_arr, revisions_arr = [], []
-        for i in _get_view_records(j, ASSIGNED_FORMULA):
-            if i.get('fields')['Status'] == '👨🏻‍💻 Editor Assigned':
-                assigned_arr.append(i.get('id'))
-            else:
-                revisions_arr.append(i.get('id'))
-            arr[j] = {
-                "assigned": assigned_arr,
-                "revisions": revisions_arr
-            }
-            print(arr)
-        data[_get_now_date()] = arr
+        for i in _get_view_records(j, ASSIGNED_FORMULA, 'record_id'):
+            arr.append(i.get('id'))
+    # print(arr)
+    data[_get_now_date()] = arr
     json.dump(data, open('updates.json', 'w'), indent=4)
 
 
 def unpack_dict(dict_):
-    # print(reduce(or_, dict_.values()), dict_)
     return reduce(or_, dict_.values())
 
 
-def check_updates():
-    data = json.load(open('updates.json'))
-    # print(data)
-    # print(type(data.values()), data.values())
-    records = list(data.values())
-    if not records[0] == records[1]:
-        for k in unpack_dict(data):
-            print(unpack_dict(k))
-        # for i in data.values():
-        #     # print(i)
-        #     unpack_dict(i)
-        #     for j in i:
-        #         print()
-        #         # print(j)
-        # # print(set.difference(records[1].items()))
+def list_difference(li1, li2):
+    return list(set(li1) - set(li2))
 
 
-"""value = { k : second_dict[k] for k in set(second_dict) - set(first_dict) }"""
-check_updates()
-
-
-
-
-"""(
-    'add', '',
-    [
-        (
-            'Mikola Matskevich',
-            {
-                'assigned': ['rec68mFqf6P4VGvZo'],
-                'revisions': []
-            }
-        )
-    ]
-)
-"""
-"""[
-    {
-        'Serge Creator - Creator':
-            {
-                'assigned': [], 
-                'revisions': [
-                    'recufsQKq8TyiQOI9', 'receAX1QZmsUlXQAP'
-                ]
-            }
-    }, 
-    {
-        'Serge Creator - Creator': 
-            {
-                'assigned': [
-                    
-                ], 
-                'revisions': [
-                    'recufsQKq8TyiQOI9', 'receAX1QZmsUlXQAP'
-                ]
-            }, 
-        'Mikola Matskevich': 
-            {
-                'assigned': 
-                    [
-                        'rec68mFqf6P4VGvZo'
-                    ], 
-                'revisions': [
-                    
-                ]
-            }
+def delete_records_json():
+    kek = list(json.load(open('updates.json', 'r')).items())[1]
+    modified_dict = {
+        kek[0]: kek[1]
     }
-]
+    json.dump(modified_dict, open('updates.json', 'w'), indent=4)
 
-"""
+
+def check_updates():
+    get_views_records()
+    data = json.load(open('updates.json'))
+    records = list(data.values())
+
+    if records[0] == records[1]:
+        return
+
+    result = list_difference(records[1], records[0])
+    delete_records_json()
+    return result
+
+
+def getting_result_records():
+    result = []
+    new_records = check_updates()
+    creators_ = json.load(open('Creators.json'))
+
+    if not new_records:
+        return
+
+    for i in creators_.items():
+        for j in _get_view_records(i[1]['view'], ASSIGNED_FORMULA, ['Name', 'Status', 'Brand']):
+            if any(j.get('id') == x for x in new_records):
+                result.append((i[0], processing(j.get('fields'))))
+    print(result)
+    return result
+
+
+getting_result_records()
