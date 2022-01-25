@@ -17,3 +17,4 @@ ASSIGNED_FORMULA = "OR({Status} = '⭕️ Revision', {Status} = '👨🏻‍💻
 """ FIELDS """
 
 FIELDS = ['Name', 'Status', 'Brand']
+
