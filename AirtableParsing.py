@@ -3,9 +3,11 @@ from datetime import datetime
 from functools import reduce
 from operator import or_
 import airtable
+import telegram.user as tgus
 from exceptions import SearchUser
 from config import BASE_ID, API_KEY
 from Constants import TABLE, ASSIGNED_FORMULA, TASKS_IN_PROGRESS_FORMULA, FIELDS
+
 
 Data_ = airtable.Airtable(BASE_ID, API_KEY)
 
@@ -46,6 +48,8 @@ def _get_view_records(view_, formula_, fields_):
 
 
 def get_views():
+    print('get_views():')
+    print(tgus.User.id)
     return [i['view'] for i in json.load(open('Creators.json')).values()]
 
 
@@ -54,7 +58,6 @@ def get_views_records():
     for j in get_views():
         for i in _get_view_records(j, ASSIGNED_FORMULA, 'record_id'):
             arr.append(i.get('id'))
-    # print(arr)
     data[_get_now_date()] = arr
     json.dump(data, open('updates.json', 'w'), indent=4)
 
@@ -68,19 +71,24 @@ def list_difference(li1, li2):
 
 
 def delete_records_json():
-    kek = list(json.load(open('updates.json', 'r')).items())[1]
+    print('delete_records_json():')
+    kek = list(json.load(open('updates.json', 'r')).items())[-1]
+    print(f'JSON {kek}')
     modified_dict = {
         kek[0]: kek[1]
     }
+    print(f'modified_dict{modified_dict}')
     json.dump(modified_dict, open('updates.json', 'w'), indent=4)
 
 
 def check_updates():
+    print('check_updates():')
     get_views_records()
     data = json.load(open('updates.json'))
     records = list(data.values())
 
-    if records[0] == records[1]:
+    print(records[-1], records[-2])
+    if records[-1] == records[-2]:
         return
 
     result = list_difference(records[1], records[0])
@@ -89,11 +97,13 @@ def check_updates():
 
 
 def getting_result_records():
+    print(f'getting_result_records {_get_now_date()}')
     result = []
     new_records = check_updates()
     creators_ = json.load(open('Creators.json'))
 
     if not new_records:
+        delete_records_json()
         return
 
     for i in creators_.items():
@@ -102,6 +112,3 @@ def getting_result_records():
                 result.append((i[0], processing(j.get('fields'))))
     print(result)
     return result
-
-
-getting_result_records()
