@@ -69,23 +69,18 @@ def list_difference(li1, li2):
 
 
 def delete_records_json():
-    print('delete_records_json():')
     kek = list(json.load(open('updates.json', 'r')).items())[-1]
-    print(f'JSON {kek}')
     modified_dict = {
         kek[0]: kek[1]
     }
-    print(f'modified_dict{modified_dict}')
     json.dump(modified_dict, open('updates.json', 'w'), indent=4)
 
 
 def check_updates():
-    print('check_updates():')
     get_views_records()
     data = json.load(open('updates.json'))
     records = list(data.values())
 
-    print(records[-1], records[-2])
     if records[-1] == records[-2]:
         return
 
@@ -95,7 +90,6 @@ def check_updates():
 
 
 def getting_result_records():
-    print(f'getting_result_records {_get_now_date()}')
     result = []
     new_records = check_updates()
     creators_ = json.load(open('Creators.json'))
@@ -108,5 +102,4 @@ def getting_result_records():
         for j in _get_view_records(i[1]['view'], ASSIGNED_FORMULA, ['Name', 'Status', 'Brand']):
             if any(j.get('id') == x for x in new_records):
                 result.append((i[0], processing(j.get('fields'))))
-    print(result)
     return result
