@@ -3,7 +3,6 @@ from datetime import datetime
 from functools import reduce
 from operator import or_
 import airtable
-import telegram.user as tgus
 from exceptions import SearchUser
 from config import BASE_ID, API_KEY
 from Constants import TABLE, ASSIGNED_FORMULA, TASKS_IN_PROGRESS_FORMULA, FIELDS
@@ -48,8 +47,7 @@ def _get_view_records(view_, formula_, fields_):
 
 
 def get_views():
-    print('get_views():')
-    print(tgus.User.id)
+    # print([i for i in kek if bot.approve_chat_join_request(user_id=float(i))])
     return [i['view'] for i in json.load(open('Creators.json')).values()]
 
 

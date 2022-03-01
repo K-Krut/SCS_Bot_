@@ -2,11 +2,10 @@ from datetime import datetime
 import schedule as schedule
 import time
 import AirtableParsing
-import config
 import telegram
+from config import TOKEN
 
-
-bot = telegram.Bot(token=config.TOKEN)
+bot = telegram.Bot(token=TOKEN)
 
 
 def handler():
