@@ -102,4 +102,5 @@ def getting_result_records():
         for j in _get_view_records(i[1]['view'], ASSIGNED_FORMULA, ['Name', 'Status', 'Brand']):
             if any(j.get('id') == x for x in new_records):
                 result.append((i[0], processing(j.get('fields'))))
+    print(result)
     return result
