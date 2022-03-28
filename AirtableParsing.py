@@ -103,3 +103,4 @@ def getting_result_records():
             if any(j.get('id') == x for x in new_records):
                 result.append((i[0], processing(j.get('fields'))))
     return result
+

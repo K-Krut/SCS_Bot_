@@ -384,11 +384,245 @@ CONCATENATE(
     IF({Upcoming Events?}, 
         CONCATENATE("💃🏻Upcoming Events💃🏻\n", {Upcoming Events?}, "\n\n\n"), 
         ""
+    ),
+    
+    IF({What social media profiles are you using? (Long Text)}, 
+        CONCATENATE("🟢Social Media -- Created🟢\n", {What social media profiles are you using? (Long Text)}, "\n\n\n"), 
+        ""
+    ),
+    
+    IF({What social media do we have to create? (Long Text)}, 
+        CONCATENATE("💗Social Media -- Have To Be Created💗\n", {What social media do we have to create? (Long Text)}, "\n\n\n"), 
+        ""
     )
 )
 
 """
 
 
+########################################################################################################################
 
 
+"""
+CONCATENATE(
+    IF({Date Start},
+        DATETIME_FORMAT(SET_TIMEZONE({Date Start}, 'America/Los_Angeles'), 'M/D/Y h:mm A'), ""
+    ),    
+        " ⏱ ", 
+    IF({Date End},
+        (DATETIME_FORMAT(SET_TIMEZONE({Date End}, 'America/Los_Angeles'), 'M/D/Y h:mm A')), ""
+    ),
+        "\n\n📍 ",
+    IF({Location},
+        {Location}, ""
+    )
+)
+"""
+
+
+########################################################################################################################
+
+
+"""
+𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛éèàëêù𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁 & é “‘(- è_çà) =
+
+
+CONCATENATE(
+    "💚 𝑾𝑬𝑩 💚 ", IF({Web Site}, {Web Site}, "--"),
+    "\n🌿 𝑳𝒊𝒏𝒌𝒕𝒓𝒆𝒆 🌿 ", IF({Linktr.ee}, {Linktr.ee}, "--"),
+    "\n\n\n💗 𝑰𝑮 💗 ", IF({Instagram}, {Instagram}, "--"), 
+    "\n\n\n💎 𝑭𝑩 💎 ", IF({Facebook}, {Facebook}, "--"),
+    "\n💎 𝑭𝑩𝑷𝒆𝒓𝒔𝒐𝒏𝒂𝒍 💎 ", IF({Facebook Personal}, {Facebook Personal}, "--"),
+    "\n\n\n🖤 𝑻𝒊𝒌𝑻𝒐𝒌 🖤 ",IF({TikTok}, {TikTok}, "--"),
+    "\n\n\n❤️𝒀𝒐𝒖𝑻𝒖𝒃𝒆 ❤ ", IF({YouTube}, {YouTube}, "--"),
+    "\n\n\n💙 𝑳𝒊𝒏𝒌𝒆𝒅𝑰𝒏 💙 ", IF({LinkedIn}, {LinkedIn}, "--"),
+    "\n💠 𝑳𝒊𝒏𝒌𝒆𝒅𝑰𝒏 𝑪𝒐𝒎𝒑𝒂𝒏𝒚 💠 ", IF({LinkedIn Company Page}, {LinkedIn Company Page}, "--")
+)
+
+
+CONCATENATE(
+    "𝐖𝐞𝐛 𝐒𝐢𝐭𝐞: ", IF({Web Site}, {Web Site}, "–"),
+    "\n\n𝐋𝐢𝐧𝐤𝐭𝐫.𝐞𝐞: ", IF({Linktr.ee}, {Linktr.ee}),
+    "\n\n𝐈𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦: ", IF({Instagram}, {Instagram}, "–"), 
+    "\n\n𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤 𝐅𝐚𝐧 𝐏𝐚𝐠𝐞: ", IF({Facebook}, {Facebook}, "–"),
+    "\n\n𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤 𝐏𝐞𝐫𝐬𝐨𝐧𝐚𝐥: ", IF({Facebook Personal}, {Facebook Personal}, "–"),
+    "\n\n𝐓𝐢𝐤𝐓𝐨𝐤: ",IF({TikTok}, {TikTok}, "–"),
+    "\n\n𝐘𝐨𝐮𝐓𝐮𝐛𝐞: ", IF({YouTube}, {YouTube}, "–"),
+    "\n\n𝐋𝐢𝐧𝐤𝐞𝐝𝐈𝐧: ", IF({LinkedIn}, {LinkedIn}, "–"),
+    "\n\n𝐋𝐢𝐧𝐤𝐞𝐝𝐈𝐧 𝐂𝐨𝐦𝐩𝐚𝐧𝐲: ", IF({LinkedIn Company Page}, {LinkedIn Company Page}, "–"),
+    "\n\n𝐁𝐞𝐡𝐚𝐧𝐜𝐞: ", IF({Behance}, {Behance}, "–"),
+    "\n\n𝐓𝐰𝐢𝐭𝐭𝐞𝐫: ", IF({Twitter}, {Twitter}, "–"),
+    "\n\n𝐏𝐢𝐧𝐭𝐞𝐫𝐞𝐬𝐭: ", IF({Pinterest}, {Pinterest}, "–"),
+    "\n\n𝐆𝐨𝐨𝐠𝐥𝐞 𝐌𝐲 𝐁𝐮𝐬𝐢𝐧𝐞𝐬𝐬: ", IF({Google My Business}, {Google My Business}, "–"),
+    "\n\n𝐀𝐧𝐜𝐡𝐨𝐫: ", IF({Anchor}, {Anchor}, "–"),
+    "\n\nGoogle My Business: ", IF({Google My Business}, {Google My Business}, "–")
+)
+
+
+
+CONCATENATE(
+    IF({Web Site}, 
+        CONCATENATE("𝐖𝐞𝐛 𝐒𝐢𝐭𝐞: ", {Web Site}, "\n\n"), 
+        ""
+    ),
+    
+    IF({Linktr.ee}, 
+        CONCATENATE("𝐋𝐢𝐧𝐤𝐭𝐫.𝐞𝐞: ", {Linktr.ee}, "\n\n"), 
+        ""
+    ),
+    
+    IF({Instagram}, 
+    CONCATENATE("𝐈𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦: ", {Instagram}, "\n\n"), 
+    ""
+    ), 
+    
+    IF({Facebook}, 
+        CONCATENATE("𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤 𝐅𝐚𝐧 𝐏𝐚𝐠𝐞: ", {Facebook}, "\n\n"), 
+        ""
+    ),
+    
+    IF({Facebook Personal}, 
+        CONCATENATE("𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤 𝐏𝐞𝐫𝐬𝐨𝐧𝐚𝐥: ", {Facebook Personal}, "\n\n"), 
+        ""
+    ),
+    
+    IF({TikTok}, 
+        CONCATENATE("𝐓𝐢𝐤𝐓𝐨𝐤: ", {TikTok}, "\n\n"), 
+        ""
+    ),
+    
+    IF({YouTube}, 
+        CONCATENATE("𝐘𝐨𝐮𝐓𝐮𝐛𝐞: ", {YouTube}, "\n\n"), 
+        ""
+    ),
+    
+    IF({LinkedIn}, 
+        CONCATENATE("𝐋𝐢𝐧𝐤𝐞𝐝𝐈𝐧: ", {LinkedIn}, "\n\n"), 
+        ""
+    ),
+    
+    IF({LinkedIn Company Page}, 
+        CONCATENATE("𝐋𝐢𝐧𝐤𝐞𝐝𝐈𝐧 𝐂𝐨𝐦𝐩𝐚𝐧𝐲: ", {LinkedIn Company Page}, "\n\n"), 
+        ""
+    ),
+    
+    IF({Behance}, 
+        CONCATENATE("𝐁𝐞𝐡𝐚𝐧𝐜𝐞: ", {Behance}, "\n\n"), 
+        ""
+    ),
+    
+    IF({Twitter}, 
+        CONCATENATE("𝐓𝐰𝐢𝐭𝐭𝐞𝐫: ", {Twitter}, "\n\n"), 
+        ""
+    ),
+    
+    IF({Pinterest}, 
+        CONCATENATE("𝐏𝐢𝐧𝐭𝐞𝐫𝐞𝐬𝐭: ", {Pinterest}, "\n\n"), 
+        ""
+    ),
+    
+    IF({Google My Business}, 
+        CONCATENATE("𝐆𝐨𝐨𝐠𝐥𝐞 𝐌𝐲 𝐁𝐮𝐬𝐢𝐧𝐞𝐬𝐬: ", {Google My Business}, "\n\n"), 
+        ""
+    ),
+    
+    IF({Anchor}, 
+        CONCATENATE("𝐀𝐧𝐜𝐡𝐨𝐫: ", {Anchor}, "\n\n"), 
+        ""
+    )
+)
+
+
+
+
+
+"""
+
+########################################################################################################################
+
+"""
+
+
+IF(IS_BEFORE({Date Start}}, DateF15), "Firts Part"), "Second Part")
+
+
+DATEADD({Date Start}, -14, 'days')
+
+IF(DAY({Date Start}) - 14 > 0, "Second Part", "Firts Part")
+
+
+"""
+
+########################################################################################################################
+
+
+"""
+
+CONCATENATE(
+    IF(
+        OR(
+            {Status} = '⚙️ Upcoming Editing', 
+            {Status} = '⏰ Task Description Creation',
+            {Status} = '🙋🏻‍♂️ Editor Requested',
+            {Status} = '👨🏻‍💻 Editor Assigned',
+            {Status} = '🙅🏻‍♂️ Editor Replacement',
+            {Status} = '🙋🏻‍♂️ Editor Needs Info',
+            {Status} = '⁉️ Awaiting Details',
+            {Status} = '⁉️ Technical Support',
+            {Status} = '✏️ Headline Needed',
+            {Status} = '🔆 Details Revised',
+            {Status} = '👍🏼 Ready To Go',
+            {Status} = '🚚 In Progress',
+            {Status} = '✋🏼 On Hold',
+            {Status} = '⭕️ Revision',
+            {Status} = '📝 Spell Check Review',
+            {Status} = '⚠️ Correction Review'
+            {Status} = '🚚 Sub Tasks In Progress'
+        ), "In Progress", 
+        
+        IF(
+            OR(
+                {Status} = '⚙️ Upcoming Editing', 
+                {Status} = '⏰ Task Description Creation',
+                {Status} = '🙋🏻‍♂️ Editor Requested',
+                {Status} = '🙅🏻‍♂️ Editor Replacement',
+                {Status} = '🙋🏻‍♂️ Editor Needs Info',
+                {Status} = '⁉️ Awaiting Details',
+                {Status} = '⁉️ Technical Support',
+                {Status} = '✏️ Headline Needed',
+                {Status} = '🔆 Details Revised',
+                {Status} = '📝 Spell Check Review',
+                {Status} = '⚠️ Correction Review'
+            ), "Unnasigned",
+            
+                IF(
+                    OR(
+                        {Status} = '📦 Under Review', 
+                        {Status} = '⭕️ Rev. Completed',
+                        {Status} = '🦸🏻‍♀️ Final Files Review',
+                        {Status} = '🚚 Sub Tasks Done',
+                        {Status} = '📐 Content Planning',
+                        {Status} = '#️⃣ Hashtags',
+                        {Status} = '✍🏼 Copywriting',
+                        {Status} = '🧑🏼‍💼 SM Manager Review',
+                        {Status} = '🤴🏻 Client Attention',
+                        {Status} = '🔄 Distribution Revision',
+                        {Status} = '📅 Scheduling',
+                        {Status} = '📅 Distribution Scheduled',
+                        {Status} = '📲 Posting',
+                        {Status} = '✅ Done',
+                        {Status} = '🌆 Content Gallery',
+                        {Status} = '☑️ Done Archived',
+                        {Status} = '❌ Rejected'
+                    ), "Completed",
+                
+                )
+        )
+    )
+)
+
+
+
+
+
+"""
