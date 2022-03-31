@@ -2,10 +2,14 @@ import json
 from datetime import datetime
 from functools import reduce
 from operator import or_
+from urllib.parse import urlparse
+
 import airtable
+import re
 from exceptions import SearchUser
 from config import BASE_ID, API_KEY
-from Constants import TABLE, ASSIGNED_FORMULA, TASKS_IN_PROGRESS_FORMULA, FIELDS
+from Constants import TABLE_EDITING, ASSIGNED_FORMULA, TASKS_IN_PROGRESS_FORMULA, EDITING_FIELDS, \
+    TABLE_REVISIONS, TECHNICAL_SUPPORT_FIENDS, TECHNICAL_SUPPORT_CHANNEL, TECHNICAL_SUPPORT_VIEW, URL_REGULAR
 
 
 Data_ = airtable.Airtable(BASE_ID, API_KEY)
@@ -22,32 +26,56 @@ def get_user_view(user_id):
     return data[str(user_id)]['view']
 
 
-def get_view_data(user_id):
+def get_view_data(user_id, table=TABLE_EDITING, formula=TASKS_IN_PROGRESS_FORMULA, fields_=EDITING_FIELDS):
     return Data_.iterate(
-        table_name=TABLE, view=get_user_view(user_id), fields=FIELDS,
-        filter_by_formula=TASKS_IN_PROGRESS_FORMULA, max_records=15
+        table_name=table, view=get_user_view(user_id), fields=fields_,
+        filter_by_formula=formula, max_records=15
     )
 
 
-def processing(data):
+# def process_links(data):
+#     urls = [x[0] for x in re.findall(URL_REGULAR, data)]
+#     for i in urls:
+#         # print(urlparse(i).netloc) # f"<a href='{i}'>{urlparse(i).netloc}</a>"
+#         # data.replace(i, f"<a href='{i}'></a>")
+#         re.sub('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', '', data,
+#                flags=re.MULTILINE)
+#     print(data)
+#     return data
+
+
+def process_links(data):
+    urls = [x[0] for x in re.findall(URL_REGULAR, data)]
+
+    return [data.replace('<', '').replace('>', '').replace(i, f"<a href='{i}'>{urlparse(i).netloc}</a>")
+            for i in urls][-1] if urls else data
+
+
+def processing_editing_tasks(data):
     return f'<b><i>{data["Name"].split(" | ")[0]}</i></b>\n' \
            f'Status: {data["Status"].replace("u200d", "")}\n' \
            f'Brand: {data["Brand"][0]}'
 
 
+def processing_technical_support_tasks(data):
+    return f'<b><i>⁉️ Technical Support</i></b>\n' \
+           f'Created By: {data["Created By (Text)"]}\n\n' \
+           f'Details: {process_links(data["Details"])}\n' \
+           f'URL: {process_links(data["Airtbale Record URL"])}'
+
+
 def getting_processed_data(user_id):
-    return [processing(i.get('fields')) for i in get_view_data(user_id)]
+    return [processing_editing_tasks(i.get('fields')) for i in get_view_data(user_id)]
 
 
-def _get_view_records(view_, formula_, fields_):
+def _get_view_records(view_, formula_, fields_, table=TABLE_EDITING):
     return Data_.iterate(
-        table_name=TABLE, view=view_, fields=fields_,
+        table_name=table, view=view_, fields=fields_,
         filter_by_formula=formula_
     )
 
 
-def get_views():
-    # print([i for i in kek if bot.approve_chat_join_request(user_id=float(i))])
+def get_views():  # print([i for i in kek if bot.approve_chat_join_request(user_id=float(i))])
     return [i['view'] for i in json.load(open('Creators.json')).values()]
 
 
@@ -56,6 +84,9 @@ def get_views_records():
     for j in get_views():
         for i in _get_view_records(j, ASSIGNED_FORMULA, 'record_id'):
             arr.append(i.get('id'))
+
+    for j in _get_view_records(view_=TECHNICAL_SUPPORT_VIEW, formula_=None, fields_=TECHNICAL_SUPPORT_FIENDS, table=TABLE_REVISIONS):
+        arr.append(j.get('id'))
     data[_get_now_date()] = arr
     json.dump(data, open('updates.json', 'w'), indent=4)
 
@@ -68,10 +99,15 @@ def list_difference(li1, li2):
     return list(set(li1) - set(li2))
 
 
+def get_record_photo(record):
+    photo = record.get('fields').get('Attachments')
+    return photo[0].get('url') if photo else None
+
+
 def delete_records_json():
-    kek = list(json.load(open('updates.json', 'r')).items())[-1]
+    saved_records = list(json.load(open('updates.json', 'r')).items())[-1]
     modified_dict = {
-        kek[0]: kek[1]
+        saved_records[0]: saved_records[1]
     }
     json.dump(modified_dict, open('updates.json', 'w'), indent=4)
 
@@ -85,13 +121,13 @@ def check_updates():
         return
 
     result = list_difference(records[1], records[0])
-    delete_records_json()
+    # delete_records_json()
     return result
 
 
 def getting_result_records():
     result = []
-    new_records = check_updates()
+    new_records = check_updates()  # KEK
     creators_ = json.load(open('Creators.json'))
 
     if not new_records:
@@ -101,6 +137,13 @@ def getting_result_records():
     for i in creators_.items():
         for j in _get_view_records(i[1]['view'], ASSIGNED_FORMULA, ['Name', 'Status', 'Brand']):
             if any(j.get('id') == x for x in new_records):
-                result.append((i[0], processing(j.get('fields'))))
-    print(result)
+                result.append((i[0], processing_editing_tasks(j.get('fields'))))
+
+    for j in _get_view_records(view_=TECHNICAL_SUPPORT_VIEW, formula_=None, fields_=TECHNICAL_SUPPORT_FIENDS, table=TABLE_REVISIONS):
+        if any(j.get('id') == x for x in new_records):
+            result.append((TECHNICAL_SUPPORT_CHANNEL, processing_technical_support_tasks(j.get('fields')), get_record_photo(j)))
+
     return result
+
+
+getting_result_records()
