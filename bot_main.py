@@ -29,7 +29,7 @@ def handler():
 
 
 def main():
-    schedule.every(0).to(1).minutes.do(handler)
+    schedule.every(3).to(5).minutes.do(handler)
     print("Running...")
 
     while True:
