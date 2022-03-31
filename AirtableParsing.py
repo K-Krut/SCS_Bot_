@@ -8,9 +8,7 @@ import airtable
 import re
 from exceptions import SearchUser
 from config import BASE_ID, API_KEY
-from Constants import TABLE_EDITING, ASSIGNED_FORMULA, TASKS_IN_PROGRESS_FORMULA, EDITING_FIELDS, \
-    TABLE_REVISIONS, TECHNICAL_SUPPORT_FIENDS, TECHNICAL_SUPPORT_CHANNEL, TECHNICAL_SUPPORT_VIEW, URL_REGULAR
-
+from Constants import *
 
 Data_ = airtable.Airtable(BASE_ID, API_KEY)
 
@@ -33,22 +31,11 @@ def get_view_data(user_id, table=TABLE_EDITING, formula=TASKS_IN_PROGRESS_FORMUL
     )
 
 
-# def process_links(data):
-#     urls = [x[0] for x in re.findall(URL_REGULAR, data)]
-#     for i in urls:
-#         # print(urlparse(i).netloc) # f"<a href='{i}'>{urlparse(i).netloc}</a>"
-#         # data.replace(i, f"<a href='{i}'></a>")
-#         re.sub('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', '', data,
-#                flags=re.MULTILINE)
-#     print(data)
-#     return data
-
-
-def process_links(data):
+def process_links(data, name=None):
     urls = [x[0] for x in re.findall(URL_REGULAR, data)]
 
-    return [data.replace('<', '').replace('>', '').replace(i, f"<a href='{i}'>{urlparse(i).netloc}</a>")
-            for i in urls][-1] if urls else data
+    return [data.replace('<', '').replace('>', '').replace(i, f"<a href='{i}'>{urlparse(i).netloc}</a>" if not name
+    else f"<a href='{i}'>{name}</a>") for i in urls][-1] if urls else data
 
 
 def processing_editing_tasks(data):
@@ -57,11 +44,24 @@ def processing_editing_tasks(data):
            f'Brand: {data["Brand"][0]}'
 
 
+def fields_processing(field):
+    return field[0] if field and isinstance(field, list) else field if field else ''
+
+
+def process_status(record, filed):
+    print(record)
+    result = record.get(filed)
+    return result[0] if result and isinstance(result, list) else ''
+
+
 def processing_technical_support_tasks(data):
-    return f'<b><i>⁉️ Technical Support</i></b>\n' \
-           f'Created By: {data["Created By (Text)"]}\n\n' \
+    return f'<b><i>⁉️ Technical Support</i></b>\n\n' \
+           f'{data["Created By (Text)"]} submitted new support ticket\n\n' \
            f'Details: {process_links(data["Details"])}\n' \
-           f'URL: {process_links(data["Airtbale Record URL"])}'
+           f'{process_links(data["Airtbale Record URL"], "Airtable URL")}\n\n' \
+           f'{process_status(data, "🚦 Actual Status Text")} <b>⇒</b> ' \
+           f'{process_status(data, "🚦 Next Status")}\n\n' \
+           f'{process_status(data, "Name (from 💻 Editing)")}'
 
 
 def getting_processed_data(user_id):
@@ -80,12 +80,14 @@ def get_views():  # print([i for i in kek if bot.approve_chat_join_request(user_
 
 
 def get_views_records():
+    print(' get_views_records()')
     arr, data = [], json.load(open('updates.json'))
     for j in get_views():
         for i in _get_view_records(j, ASSIGNED_FORMULA, 'record_id'):
             arr.append(i.get('id'))
 
-    for j in _get_view_records(view_=TECHNICAL_SUPPORT_VIEW, formula_=None, fields_=TECHNICAL_SUPPORT_FIENDS, table=TABLE_REVISIONS):
+    for j in _get_view_records(view_=TECHNICAL_SUPPORT_VIEW, formula_=None, fields_=TECHNICAL_SUPPORT_FIENDS,
+                               table=TABLE_REVISIONS):
         arr.append(j.get('id'))
     data[_get_now_date()] = arr
     json.dump(data, open('updates.json', 'w'), indent=4)
@@ -100,8 +102,14 @@ def list_difference(li1, li2):
 
 
 def get_record_photo(record):
+    print('get_record_photo(record)')
     photo = record.get('fields').get('Attachments')
     return photo[0].get('url') if photo else None
+
+
+# def get_record_editing(record):
+#     editing = record.get('fields').get('Name (from 💻 Editing)')
+#     return editing[0].get() if editing else None
 
 
 def delete_records_json():
@@ -113,6 +121,7 @@ def delete_records_json():
 
 
 def check_updates():
+    print('check updates')
     get_views_records()
     data = json.load(open('updates.json'))
     records = list(data.values())
@@ -126,6 +135,7 @@ def check_updates():
 
 
 def getting_result_records():
+    print('getting_result_records()')
     result = []
     new_records = check_updates()  # KEK
     creators_ = json.load(open('Creators.json'))
@@ -139,11 +149,11 @@ def getting_result_records():
             if any(j.get('id') == x for x in new_records):
                 result.append((i[0], processing_editing_tasks(j.get('fields'))))
 
-    for j in _get_view_records(view_=TECHNICAL_SUPPORT_VIEW, formula_=None, fields_=TECHNICAL_SUPPORT_FIENDS, table=TABLE_REVISIONS):
+    for j in _get_view_records(view_=TECHNICAL_SUPPORT_VIEW, formula_=None, fields_=TECHNICAL_SUPPORT_FIENDS,
+                               table=TABLE_REVISIONS):
         if any(j.get('id') == x for x in new_records):
-            result.append((TECHNICAL_SUPPORT_CHANNEL, processing_technical_support_tasks(j.get('fields')), get_record_photo(j)))
+            result.append(
+                (TECHNICAL_SUPPORT_CHANNEL, processing_technical_support_tasks(j.get('fields')), get_record_photo(j)))
 
+    print(result)
     return result
-
-
-getting_result_records()

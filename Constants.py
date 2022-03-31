@@ -17,7 +17,8 @@ ASSIGNED_FORMULA = "OR({Status} = '⭕️ Revision', {Status} = '👨🏻‍💻
 """Fields"""
 
 EDITING_FIELDS = ['Name', 'Status', 'Brand']
-TECHNICAL_SUPPORT_FIENDS = ["Created By (Text)", 'Details', 'Airtbale Record URL', 'Attachments']
+TECHNICAL_SUPPORT_FIENDS = ["Created By (Text)", 'Details', '🚦 Actual Status Text', '🚦 Next Status',
+                            'Name (from 💻 Editing)', 'Airtbale Record URL', 'Attachments']
 
 
 """Views"""
@@ -25,7 +26,7 @@ TECHNICAL_SUPPORT_VIEW = "Technical Support View"
 
 
 """Chats and Channels"""
-TECHNICAL_SUPPORT_CHANNEL = "-1001740739522"
+TECHNICAL_SUPPORT_CHANNEL = "-1001175426622"
 
 
 """Other"""
