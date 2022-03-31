@@ -49,7 +49,6 @@ def fields_processing(field):
 
 
 def process_status(record, filed):
-    print(record)
     result = record.get(filed)
     return result[0] if result and isinstance(result, list) else ''
 
@@ -80,7 +79,6 @@ def get_views():  # print([i for i in kek if bot.approve_chat_join_request(user_
 
 
 def get_views_records():
-    print(' get_views_records()')
     arr, data = [], json.load(open('updates.json'))
     for j in get_views():
         for i in _get_view_records(j, ASSIGNED_FORMULA, 'record_id'):
@@ -101,8 +99,7 @@ def list_difference(li1, li2):
     return list(set(li1) - set(li2))
 
 
-def get_record_photo(record):
-    print('get_record_photo(record)')
+def get_record_photo(record):ъ
     photo = record.get('fields').get('Attachments')
     return photo[0].get('url') if photo else None
 
@@ -121,7 +118,6 @@ def delete_records_json():
 
 
 def check_updates():
-    print('check updates')
     get_views_records()
     data = json.load(open('updates.json'))
     records = list(data.values())
@@ -135,7 +131,6 @@ def check_updates():
 
 
 def getting_result_records():
-    print('getting_result_records()')
     result = []
     new_records = check_updates()  # KEK
     creators_ = json.load(open('Creators.json'))
